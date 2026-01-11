@@ -1,52 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
-    <title>My Dashboard - Coranu</title>
+    <title>Studio - Coranu Dashboard</title>
 </head>
 <body class="bg-gray-50">
-    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center border-b">
+
+    <!-- Navbar -->
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center bg-white border-b sticky top-0 z-50">
         <a href="index.html" class="flex items-center gap-2">
             <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
-            <span class="text-2xl font-black">Coranu</span>
+            <span class="text-2xl font-black tracking-tighter uppercase">Coranu</span>
         </a>
-        <div id="nav-actions"></div> <!-- JS will inject the SAME icons here -->
+        <div id="nav-actions" class="flex items-center gap-6">
+            <!-- JS handles profile & logout here -->
+        </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-6 py-12">
-        <div class="flex justify-between items-center mb-12">
+        <!-- Dashboard Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
             <div>
-                <h1 class="text-4xl font-black tracking-tight">Author Studio</h1>
-                <p class="text-gray-500">Manage your stories and inspiration.</p>
+                <h1 class="text-4xl font-black tracking-tight text-gray-900">Author Studio</h1>
+                <p class="text-gray-400 font-medium">Manage your creative space and stories.</p>
             </div>
-            <button id="open-modal" class="btn-primary">+ CREATE NEW STORY</button>
+            <button id="open-modal" class="btn-primary shadow-xl shadow-blue-100">+ CREATE NEW STORY</button>
         </div>
 
-        <!-- Dashboard Cards Grid -->
-        <div id="my-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Your posts cards here -->
+        <!-- My Grid Section -->
+        <div class="flex items-center gap-2 mb-8">
+            <h2 class="text-xl font-black uppercase tracking-widest text-gray-400">My Published Stories</h2>
+            <div class="h-px bg-gray-200 flex-1 ml-4"></div>
+        </div>
+        
+        <div id="my-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- User's own blog cards will be injected here -->
         </div>
     </main>
 
-    <!-- Create Post Modal -->
-    <div id="post-modal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Write a Story</h2>
-                <button id="close-modal" class="text-gray-400 text-2xl font-bold">&times;</button>
-            </div>
-            <form id="post-form" class="space-y-4">
-                <input type="text" id="title" placeholder="Title" class="input-field" required>
-                <input type="text" id="category" placeholder="Category" class="input-field" required>
-                <textarea id="content" placeholder="Content..." class="input-field h-40" required></textarea>
-                <input type="file" id="image" class="text-sm">
-                <button type="submit" id="submit-btn" class="btn-primary w-full justify-center">PUBLISH</button>
+    <!-- Create/Edit Modal -->
+    <div id="post-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xl rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-y-auto max-h-[90vh]">
+            <button id="close-modal" class="absolute top-6 right-8 text-3xl text-gray-300 hover:text-gray-600 transition">&times;</button>
+            
+            <h2 id="modal-title" class="text-3xl font-black mb-8 tracking-tight">New Story</h2>
+            
+            <form id="post-form" class="space-y-5">
+                <input type="hidden" id="edit-id">
+                
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Story Title</label>
+                    <input type="text" id="title" placeholder="A catchy title..." class="input-field mt-1" required>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Category</label>
+                    <input type="text" id="category" placeholder="e.g. Technology, Lifestyle" class="input-field mt-1" required>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Story Content</label>
+                    <textarea id="content" placeholder="Once upon a time..." class="input-field h-40 resize-none mt-1" required></textarea>
+                </div>
+                
+                <div class="bg-blue-50/50 p-6 rounded-3xl border-2 border-dashed border-blue-100">
+                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2">Cover Image</p>
+                    <input type="file" id="image-file" class="text-xs text-gray-500" accept="image/*">
+                    <p id="image-hint" class="text-[10px] text-gray-400 mt-2 italic">Leave empty to keep current image (when editing)</p>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-4 text-sm tracking-widest">
+                    PUBLISH STORY
+                </button>
             </form>
         </div>
     </div>
-
-    
 
     <script type="module" src="js/dashboard.js"></script>
 </body>
