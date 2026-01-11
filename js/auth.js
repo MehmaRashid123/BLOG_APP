@@ -78,7 +78,10 @@ form.onsubmit = async (e) => {
 
             if (user) {
                 // 2. Upload Avatar
-                const fileName = `avatars/${user.id}_${Date.now()}`;
+                // Sanitize filename: Use generic name to avoid special char issues in URLs
+                const fileExt = file.name.split('.').pop();
+                const fileName = `avatars/${user.id}_${Date.now()}.${fileExt}`;
+                
                 const { error: uploadError } = await supabase.storage
                     .from('blog-images')
                     .upload(fileName, file);

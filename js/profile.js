@@ -48,6 +48,11 @@ avatarInput.onchange = () => {
     if (file) preview.src = URL.createObjectURL(file);
 };
 
+// Error handling: fallback to placeholder if image fails to load (e.g. 404/403)
+preview.onerror = () => {
+    preview.src = "https://via.placeholder.com/150";
+};
+
 form.onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('save');
@@ -62,7 +67,9 @@ form.onsubmit = async (e) => {
         // Agar user ne nayi image select ki hai toh upload karein
         if(avatarInput.files[0]) {
             const file = avatarInput.files[0];
-            const path = `avatars/${user.id}_${Date.now()}`;
+            const fileExt = file.name.split('.').pop();
+            const path = `avatars/${user.id}_${Date.now()}.${fileExt}`;
+            
             const { error: uploadError } = await supabase.storage.from('blog-images').upload(path, file);
             
             if (uploadError) throw uploadError;

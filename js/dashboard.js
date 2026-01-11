@@ -85,7 +85,8 @@ postForm.onsubmit = async (e) => {
 
         // Agar file select ki hai toh upload karein
         if (file) {
-            const fileName = `blogs/${Date.now()}_${file.name}`;
+            const fileExt = file.name.split('.').pop();
+            const fileName = `blogs/${Date.now()}_${Math.floor(Math.random()*1000)}.${fileExt}`;
             await supabase.storage.from('blog-images').upload(fileName, file);
             imageUrl = supabase.storage.from('blog-images').getPublicUrl(fileName).data.publicUrl;
         }
