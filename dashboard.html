@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>My Dashboard - Coranu</title>
+</head>
+<body class="bg-gray-50">
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center border-b">
+        <a href="index.html" class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
+            <span class="text-2xl font-black">Coranu</span>
+        </a>
+        <div id="nav-actions"></div> <!-- JS will inject the SAME icons here -->
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex justify-between items-center mb-12">
+            <div>
+                <h1 class="text-4xl font-black tracking-tight">Author Studio</h1>
+                <p class="text-gray-500">Manage your stories and inspiration.</p>
+            </div>
+            <button id="open-modal" class="btn-primary">+ CREATE NEW STORY</button>
+        </div>
+
+        <!-- Dashboard Cards Grid -->
+        <div id="my-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Your posts cards here -->
+        </div>
+    </main>
+
+    <!-- Create Post Modal -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Write a Story</h2>
+                <button id="close-modal" class="text-gray-400 text-2xl font-bold">&times;</button>
+            </div>
+            <form id="post-form" class="space-y-4">
+                <input type="text" id="title" placeholder="Title" class="input-field" required>
+                <input type="text" id="category" placeholder="Category" class="input-field" required>
+                <textarea id="content" placeholder="Content..." class="input-field h-40" required></textarea>
+                <input type="file" id="image" class="text-sm">
+                <button type="submit" id="submit-btn" class="btn-primary w-full justify-center">PUBLISH</button>
+            </form>
+        </div>
+    </div>
+
+    
+
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

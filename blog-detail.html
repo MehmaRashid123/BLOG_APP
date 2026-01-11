@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Story Details - Coranu</title>
+</head>
+<body class="bg-white">
+    <!-- Nav stays same with nav-actions -->
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center border-b">
+        <a href="index.html" class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
+            <span class="text-2xl font-extrabold tracking-tighter">Coranu</span>
+        </a>
+        <div id="nav-actions"></div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto py-16 px-6">
+        <div id="story-render">
+            <!-- Blog content here -->
+        </div>
+
+        <!-- Social Interactions Section -->
+        <div class="mt-16 border-t pt-10">
+            <div class="flex items-center gap-8 mb-10">
+                <button id="like-btn" class="group flex items-center gap-2 font-bold text-gray-400 hover:text-rose-500 transition text-lg">
+                    <span id="heart-icon" class="text-2xl">♡</span> 
+                    <span id="like-count">0</span> Likes
+                </button>
+                <div class="text-gray-400 font-bold text-lg italic">
+                    Comments (<span id="comment-count">0</span>)
+                </div>
+            </div>
+
+            <!-- Comment Form -->
+            <form id="comment-form" class="flex gap-4 mb-12">
+                <input type="text" id="comment-input" placeholder="What are your thoughts?" class="input-field flex-1">
+                <button type="submit" class="btn-primary">Post</button>
+            </form>
+
+            <!-- Comments List -->
+            <div id="comment-list" class="space-y-6">
+                <!-- Comments injected here -->
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/detail.js"></script>
+</body>
+</html>

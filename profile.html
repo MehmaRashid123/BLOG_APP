@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Edit Profile - Coranu</title>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white p-6 border-b flex justify-between"><a href="dashboard.html" class="font-bold text-blue-600">← DASHBOARD</a></nav>
+    <main class="max-w-xl mx-auto py-20 px-6">
+        <form id="profile-form" class="bg-white p-12 rounded-[50px] shadow-sm border space-y-8 text-center">
+            <div class="relative inline-block">
+                <img id="preview" src="https://via.placeholder.com/150" class="w-40 h-40 rounded-full object-cover border-8 border-gray-50">
+                <input type="file" id="avatar" class="hidden">
+                <label for="avatar" class="absolute bottom-2 right-2 bg-blue-600 text-white p-3 rounded-full cursor-pointer shadow-xl font-bold">✎</label>
+            </div>
+            <div class="text-left space-y-4">
+                <input type="text" id="full_name" placeholder="Display Name" class="input-field font-bold">
+                <input type="text" id="username" placeholder="@username" class="input-field">
+                <textarea id="bio" placeholder="Your story/bio..." class="input-field h-32"></textarea>
+            </div>
+            <button type="submit" id="save" class="btn-primary w-full justify-center py-4">UPDATE PROFILE</button>
+        </form>
+    </main>
+
+    <script type="module">
+        import { supabase } from './js/config.js';
+        const form = document.getElementById('profile-form');
+        const preview = document.getElementById('preview');
+        const avatarInput = document.getElementById('avatar');
+
+        async function init() {
+            const { data: { user } } = await supabase.auth.getUser();
+            const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+            if(p) {
+                document.getElementById('full_name').value = p.full_name || '';
+                document.getElementById('username').value = p.username || '';
+                document.getElementById('bio').value = p.bio || '';
+                if(p.avatar_url) preview.src = p.avatar_url;
+            }
+        }
+
+        avatarInput.onchange = () => { preview.src = URL.createObjectURL(avatarInput.files[0]); };
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const { data: { user } } = await supabase.auth.getUser();
+            let url = preview.src;
+
+            if(avatarInput.files[0]) {
+                const path = `avatars/${user.id}_${Date.now()}`;
+                await supabase.storage.from('blog-images').upload(path, avatarInput.files[0]);
+                url = supabase.storage.from('blog-images').getPublicUrl(path).data.publicUrl;
+            }
+
+            await supabase.from('profiles').upsert({
+                id: user.id,
+                full_name: document.getElementById('full_name').value,
+                username: document.getElementById('username').value,
+                bio: document.getElementById('bio').value,
+                avatar_url: url
+            });
+            alert("Profile Updated!");
+        };
+        init();
+    </script>
+</body>
+</html>
