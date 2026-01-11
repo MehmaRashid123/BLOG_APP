@@ -1,5 +1,6 @@
 import { supabase } from './config.js';
 import { updateNavbar } from './navbar.js';
+import { showToast } from './toast.js';
 
 const params = new URLSearchParams(window.location.search);
 const blogId = params.get('id');
@@ -79,7 +80,7 @@ async function loadComments() {
 document.getElementById('comment-form').onsubmit = async (e) => {
     e.preventDefault();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return alert("Please Login to comment!");
+    if (!user) return showToast("Please Login to comment!", "warning");
 
     const input = document.getElementById('comment-input');
     const content = input.value.trim();
@@ -91,17 +92,18 @@ document.getElementById('comment-form').onsubmit = async (e) => {
         content: content
     }]);
 
-    if (error) alert("Error: " + error.message);
+    if (error) showToast("Error: " + error.message, "error");
     else {
         input.value = '';
         await loadComments();
+        showToast("Comment posted!", "success");
     }
 };
 
 // 4. Like/Unlike Toggle Logic
 document.getElementById('like-btn').onclick = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return alert("Please Login to like!");
+    if (!user) return showToast("Please Login to like!", "warning");
 
     const bId = parseInt(blogId);
 
@@ -122,6 +124,7 @@ document.getElementById('like-btn').onclick = async () => {
         await supabase.from('likes').insert([{ user_id: user.id, blog_id: bId }]);
         document.getElementById('heart-icon').innerText = '♥';
         document.getElementById('heart-icon').classList.add('text-rose-500');
+        showToast("Liked!", "success");
     }
     loadLikes();
 };

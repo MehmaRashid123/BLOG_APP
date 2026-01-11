@@ -1,4 +1,5 @@
 import { supabase } from './config.js';
+import { showToast } from './toast.js';
 
 const form = document.getElementById('auth-form');
 const pfpInput = document.getElementById('pfp-input');
@@ -54,7 +55,8 @@ form.onsubmit = async (e) => {
             }
 
             console.log("Login Success");
-            window.location.href = 'index.html';
+            showToast("Login Successful! Redirecting...", "success");
+            setTimeout(() => window.location.href = 'index.html', 1500);
 
         } else {
             // --- SIGNUP LOGIC ---
@@ -87,7 +89,8 @@ form.onsubmit = async (e) => {
                 const avatarUrl = urlData.publicUrl;
 
                 // 3. Create Profile Entry
-                const { error: profileError } = await supabase.from('profiles').insert([{
+                // Use upsert instead of insert to prevent "duplicate key" error if profile already exists
+                const { error: profileError } = await supabase.from('profiles').upsert([{
                     id: user.id,
                     full_name: fullName,
                     username: username,
@@ -96,12 +99,12 @@ form.onsubmit = async (e) => {
 
                 if (profileError) throw profileError;
 
-                alert("Signup successful! Please check your email for confirmation link before logging in.");
-                window.location.reload(); // Refresh to go back to Login mode
+                showToast("Signup successful! Please check your email.", "success");
+                setTimeout(() => window.location.reload(), 2000); // Refresh to go back to Login mode
             }
         }
     } catch (err) {
-        alert(err.message);
+        showToast(err.message, "error");
         submitBtn.innerText = isLoginMode ? "SIGN IN →" : "CREATE ACCOUNT →";
         submitBtn.disabled = false;
     }

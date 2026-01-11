@@ -4,17 +4,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
     <title>Join Coranu</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-6">
     <div class="max-w-md w-full bg-white p-10 rounded-[40px] shadow-sm border">
         <div class="text-center mb-8">
             <div class="w-8 h-8 bg-blue-600 rounded-full mx-auto mb-2"></div>
-            <h2 id="title" class="text-3xl font-black tracking-tighter">Welcome</h2>
+            <h2 id="title" class="text-3xl font-black tracking-tighter">Welcome Back</h2>
         </div>
 
         <form id="auth-form" class="space-y-4">
             <!-- Signup Only Fields -->
-            <div id="signup-fields" class="space-y-4">
+            <div id="signup-fields" class="space-y-4 hidden">
                 <div class="flex flex-col items-center mb-4">
                     <img id="pfp-preview" src="https://via.placeholder.com/80" class="w-20 h-20 rounded-full object-cover mb-2 border-2 border-blue-100">
                     <input type="file" id="pfp-input" class="hidden" accept="image/*">
@@ -27,12 +29,12 @@
             <input type="email" id="email" placeholder="Email Address" class="input-field" required>
             <input type="password" id="password" placeholder="Password" class="input-field" required>
             
-            <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-4">CONTINUE →</button>
+            <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-4">SIGN IN →</button>
         </form>
 
         <p class="text-center mt-6 text-sm text-gray-500">
-            <span id="toggle-text">Already have an account?</span>
-            <button id="toggle-btn" class="text-blue-600 font-bold ml-1">Login</button>
+            <span id="toggle-text">Don't have an account?</span>
+            <button id="toggle-btn" class="text-blue-600 font-bold ml-1">Signup</button>
         </p>
     </div>
 

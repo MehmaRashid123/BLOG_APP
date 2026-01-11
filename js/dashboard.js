@@ -1,5 +1,6 @@
 import { supabase } from './config.js';
 import { updateNavbar } from './navbar.js';
+import { showToast } from './toast.js';
 
 const modal = document.getElementById('post-modal');
 const openBtn = document.getElementById('open-modal');
@@ -96,18 +97,18 @@ postForm.onsubmit = async (e) => {
             // Update Existing
             const { error } = await supabase.from('blogs').update(blogData).eq('id', currentEditId);
             if (error) throw error;
-            alert("Story Updated!");
+            showToast("Story Updated!", "success");
         } else {
             // Insert New
             if (!imageUrl) throw new Error("Please select a cover image!");
             const { error } = await supabase.from('blogs').insert([blogData]);
             if (error) throw error;
-            alert("Story Published!");
+            showToast("Story Published!", "success");
         }
 
-        location.reload();
+        setTimeout(() => location.reload(), 1500);
     } catch (err) {
-        alert(err.message);
+        showToast(err.message, "error");
         btn.innerText = isEditMode ? "UPDATE STORY" : "PUBLISH STORY";
         btn.disabled = false;
     }
@@ -135,8 +136,11 @@ window.openEditModal = async (id) => {
 window.deletePost = async (id) => {
     if (confirm("Permanently delete this story? This will also remove its likes and comments.")) {
         const { error } = await supabase.from('blogs').delete().eq('id', id);
-        if (error) alert(error.message);
-        else location.reload();
+        if (error) showToast(error.message, "error");
+        else {
+            showToast("Story deleted!", "success");
+            setTimeout(() => location.reload(), 1000);
+        }
     }
 };
 

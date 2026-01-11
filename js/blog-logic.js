@@ -1,4 +1,5 @@
 import { supabase } from './config.js';
+import { showToast } from './toast.js';
 
 const blogForm = document.getElementById('blog-form');
 const myBlogsContainer = document.getElementById('my-blogs');
@@ -36,38 +37,41 @@ async function loadMyBlogs(userId) {
 }
 
 // 3. Handle Form Submit (Create)
-blogForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const user = (await supabase.auth.getUser()).data.user;
-    const file = document.getElementById('image-input').files[0];
-    const btn = document.getElementById('save-btn');
+if(blogForm){
+    blogForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = (await supabase.auth.getUser()).data.user;
+        const file = document.getElementById('image-input').files[0];
+        const btn = document.getElementById('save-btn');
 
-    if(!file) return alert("Please select an image");
-    btn.innerText = "UPLOADING...";
+        if(!file) return showToast("Please select an image", "warning");
+        btn.innerText = "UPLOADING...";
 
-    // Upload Image
-    const fileName = `${Date.now()}_${file.name}`;
-    const { data: uploadData } = await supabase.storage.from('blog-images').upload(fileName, file);
-    const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(fileName);
+        // Upload Image
+        const fileName = `${Date.now()}_${file.name}`;
+        const { data: uploadData } = await supabase.storage.from('blog-images').upload(fileName, file);
+        const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(fileName);
 
-    // Save to DB
-    const { error } = await supabase.from('blogs').insert([{
-        title: document.getElementById('title').value,
-        content: document.getElementById('content').value,
-        category: document.getElementById('category').value,
-        image_url: urlData.publicUrl,
-        user_id: user.id
-    }]);
+        // Save to DB
+        const { error } = await supabase.from('blogs').insert([{
+            title: document.getElementById('title').value,
+            content: document.getElementById('content').value,
+            category: document.getElementById('category').value,
+            image_url: urlData.publicUrl,
+            user_id: user.id
+        }]);
 
-    if(error) alert(error.message);
-    else location.reload();
-});
+        if(error) showToast(error.message, "error");
+        else location.reload();
+    });
+}
 
 // 4. Delete Function
 window.deleteBlog = async (id) => {
     if(confirm("Are you sure?")) {
         const { error } = await supabase.from('blogs').delete().eq('id', id);
         if(!error) location.reload();
+        else showToast(error.message, "error");
     }
 }
 
