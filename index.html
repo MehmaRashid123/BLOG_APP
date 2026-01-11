@@ -9,12 +9,14 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
-<body>
+<body class="bg-gray-50 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
     <!-- Persistent Navbar -->
-    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-50">
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
         <a href="index.html" class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
-            <span class="text-2xl font-black tracking-tighter">Coranu</span>
+            <div class="w-8 h-8 bg-blue-600 rounded-xl shadow-lg shadow-blue-200 flex items-center justify-center">
+                 <span class="text-white font-bold text-lg">C</span>
+            </div>
+            <span class="text-2xl font-black tracking-tighter text-slate-900">Coranu</span>
         </a>
         <div id="nav-actions">
             <!-- JS will inject buttons here -->
@@ -22,19 +24,25 @@
     </nav>
 
     <!-- Header -->
-    <header class="max-w-7xl mx-auto px-6 py-20 text-center">
-        <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-gray-900">Thoughts, Ideas,<br>& Stories.</h1>
-        <div class="h-px bg-gray-100 mt-16 max-w-4xl mx-auto"></div>
+    <header class="max-w-7xl mx-auto px-6 py-24 text-center">
+        <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 leading-tight text-slate-900">
+            Thoughts, Ideas,<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">& Stories.</span>
+        </h1>
+        <p class="text-xl text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed">
+            A place to read, write, and deepen your understanding of the world.
+        </p>
+        <div class="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mt-16 max-w-4xl mx-auto"></div>
     </header>
 
     <!-- Category Filter -->
-    <div class="max-w-7xl mx-auto px-6 mb-12 flex flex-wrap gap-3 justify-center" id="category-list">
+    <div class="max-w-7xl mx-auto px-6 mb-16 flex flex-wrap gap-3 justify-center" id="category-list">
         <!-- Categories from JS -->
     </div>
 
     <!-- Blog Grid -->
     <main class="max-w-7xl mx-auto px-6 pb-24">
-        <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <!-- Blogs from JS -->
         </div>
     </main>

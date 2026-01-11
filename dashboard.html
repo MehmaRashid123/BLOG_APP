@@ -9,13 +9,15 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
 
     <!-- Navbar -->
-    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center bg-white border-b sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
         <a href="index.html" class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
-            <span class="text-2xl font-black tracking-tighter uppercase">Coranu</span>
+            <div class="w-8 h-8 bg-blue-600 rounded-xl shadow-lg shadow-blue-200 flex items-center justify-center">
+                 <span class="text-white font-bold text-lg">C</span>
+            </div>
+            <span class="text-2xl font-black tracking-tighter text-slate-900">Coranu</span>
         </a>
         <div id="nav-actions" class="flex items-center gap-6">
             <!-- JS handles profile & logout here -->
@@ -26,55 +28,60 @@
         <!-- Dashboard Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
             <div>
-                <h1 class="text-4xl font-black tracking-tight text-gray-900">Author Studio</h1>
-                <p class="text-gray-400 font-medium">Manage your creative space and stories.</p>
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-2">Author Studio</h1>
+                <p class="text-slate-500 font-medium text-lg">Manage your creative space and stories.</p>
             </div>
-            <button id="open-modal" class="btn-primary shadow-xl shadow-blue-100">+ CREATE NEW STORY</button>
+            <button id="open-modal" class="btn-primary shadow-lg shadow-blue-200 hover:shadow-blue-300 transform transition-all">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Create New Story
+            </button>
         </div>
 
         <!-- My Grid Section -->
-        <div class="flex items-center gap-2 mb-8">
-            <h2 class="text-xl font-black uppercase tracking-widest text-gray-400">My Published Stories</h2>
-            <div class="h-px bg-gray-200 flex-1 ml-4"></div>
+        <div class="flex items-center gap-4 mb-8">
+            <h2 class="text-sm font-black uppercase tracking-widest text-slate-400">My Published Stories</h2>
+            <div class="h-px bg-slate-200 flex-1"></div>
         </div>
         
-        <div id="my-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div id="my-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- User's own blog cards will be injected here -->
         </div>
     </main>
 
     <!-- Create/Edit Modal -->
-    <div id="post-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xl rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-y-auto max-h-[90vh]">
-            <button id="close-modal" class="absolute top-6 right-8 text-3xl text-gray-300 hover:text-gray-600 transition">&times;</button>
+    <div id="post-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-white w-full max-w-xl rounded-[32px] p-8 md:p-10 shadow-2xl relative overflow-y-auto max-h-[90vh] ring-1 ring-black/5">
+            <button id="close-modal" class="absolute top-6 right-6 p-2 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
             
-            <h2 id="modal-title" class="text-3xl font-black mb-8 tracking-tight">New Story</h2>
+            <h2 id="modal-title" class="text-3xl font-black mb-8 tracking-tight text-slate-900">New Story</h2>
             
-            <form id="post-form" class="space-y-5">
+            <form id="post-form" class="space-y-6">
                 <input type="hidden" id="edit-id">
                 
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Story Title</label>
-                    <input type="text" id="title" placeholder="A catchy title..." class="input-field mt-1" required>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Story Title</label>
+                    <input type="text" id="title" placeholder="A catchy title..." class="input-field" required>
                 </div>
 
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Category</label>
-                    <input type="text" id="category" placeholder="e.g. Technology, Lifestyle" class="input-field mt-1" required>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Category</label>
+                    <input type="text" id="category" placeholder="e.g. Technology, Lifestyle" class="input-field" required>
                 </div>
 
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Story Content</label>
-                    <textarea id="content" placeholder="Once upon a time..." class="input-field h-40 resize-none mt-1" required></textarea>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Story Content</label>
+                    <textarea id="content" placeholder="Once upon a time..." class="input-field h-40 resize-none leading-relaxed" required></textarea>
                 </div>
                 
-                <div class="bg-blue-50/50 p-6 rounded-3xl border-2 border-dashed border-blue-100">
-                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2">Cover Image</p>
-                    <input type="file" id="image-file" class="text-xs text-gray-500" accept="image/*">
-                    <p id="image-hint" class="text-[10px] text-gray-400 mt-2 italic">Leave empty to keep current image (when editing)</p>
+                <div class="bg-blue-50 p-6 rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-400 transition cursor-pointer group">
+                    <p class="text-xs font-bold text-blue-600 uppercase mb-2 group-hover:text-blue-700">Cover Image</p>
+                    <input type="file" id="image-file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition" accept="image/*">
+                    <p id="image-hint" class="text-xs text-slate-400 mt-2 italic">Leave empty to keep current image (when editing)</p>
                 </div>
 
-                <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-4 text-sm tracking-widest">
+                <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-4 text-sm tracking-widest shadow-lg shadow-blue-200">
                     PUBLISH STORY
                 </button>
             </form>

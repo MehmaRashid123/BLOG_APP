@@ -7,22 +7,59 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
-<body class="bg-gray-50">
-    <nav class="bg-white p-6 border-b flex justify-between"><a href="dashboard.html" class="font-bold text-blue-600">← DASHBOARD</a></nav>
-    <main class="max-w-xl mx-auto py-20 px-6">
-        <form id="profile-form" class="bg-white p-12 rounded-[50px] shadow-sm border space-y-8 text-center">
-            <div class="relative inline-block">
-                <img id="preview" src="https://via.placeholder.com/150" class="w-40 h-40 rounded-full object-cover border-8 border-gray-50">
-                <input type="file" id="avatar" class="hidden">
-                <label for="avatar" class="absolute bottom-2 right-2 bg-blue-600 text-white p-3 rounded-full cursor-pointer shadow-xl font-bold">✎</label>
+<body class="bg-gray-50 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+    <div class="fixed inset-0 bg-blue-50/30 pointer-events-none -z-10"></div>
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+        <a href="dashboard.html" class="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition font-bold text-sm uppercase tracking-wider">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Dashboard
+        </a>
+    </nav>
+    <main class="max-w-2xl mx-auto py-16 px-6">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Your Profile</h1>
+            <p class="text-slate-500 mt-2">Manage your personal information and public bio.</p>
+        </div>
+
+        <form id="profile-form" class="bg-white p-10 md:p-14 rounded-[32px] shadow-xl border border-gray-100 space-y-8">
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full opacity-70 blur group-hover:opacity-100 transition duration-500"></div>
+                    <img id="preview" src="https://via.placeholder.com/150" class="relative w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm">
+                    <input type="file" id="avatar" class="hidden">
+                    <label for="avatar" class="absolute bottom-0 right-0 bg-slate-900 text-white p-2.5 rounded-full cursor-pointer shadow-lg hover:bg-blue-600 transition border-2 border-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </label>
+                </div>
+                <p class="text-xs font-bold text-slate-400 mt-4 uppercase tracking-wider">Profile Photo</p>
             </div>
-            <div class="text-left space-y-4">
-                <input type="text" id="full_name" placeholder="Display Name" class="input-field font-bold">
-                <input type="text" id="username" placeholder="@username" class="input-field">
-                <input type="email" id="email" placeholder="Email Address" class="input-field text-gray-500" readonly>
-                <textarea id="bio" placeholder="Your story/bio..." class="input-field h-32"></textarea>
+
+            <div class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Full Name</label>
+                        <input type="text" id="full_name" placeholder="Display Name" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Username</label>
+                        <input type="text" id="username" placeholder="@username" class="input-field">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Email Address</label>
+                    <input type="email" id="email" placeholder="Email Address" class="input-field bg-slate-50 text-slate-500 border-slate-100" readonly>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Bio</label>
+                    <textarea id="bio" placeholder="Tell your story..." class="input-field h-32 resize-none"></textarea>
+                </div>
             </div>
-            <button type="submit" id="save" class="btn-primary w-full justify-center py-4">UPDATE PROFILE</button>
+            
+            <div class="pt-4">
+                <button type="submit" id="save" class="btn-primary w-full shadow-lg shadow-blue-200">Save Changes</button>
+            </div>
         </form>
     </main>
 
