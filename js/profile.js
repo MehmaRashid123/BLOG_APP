@@ -1,14 +1,29 @@
 import { supabase } from './config.js';
+import { updateNavbar } from './navbar.js'; // Navbar icon update karne ke liye
 
 const form = document.getElementById('profile-form');
 const avatarInput = document.getElementById('avatar');
 const preview = document.getElementById('preview');
 
 async function load() {
+    // Navbar update karein taake profile icon dikhe
+    updateNavbar();
+
     const { data: { user } } = await supabase.auth.getUser();
     if(!user) return location.href = 'auth.html';
 
-    const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    // Profiles table se data uthayein
+    const { data: p, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+    if (error) {
+        console.log("No profile found yet, please fill the details.");
+        return;
+    }
+
     if(p) {
         document.getElementById('full_name').value = p.full_name || '';
         document.getElementById('username').value = p.username || '';
@@ -17,6 +32,7 @@ async function load() {
     }
 }
 
+// Live preview when selecting new image
 avatarInput.onchange = () => {
     const [file] = avatarInput.files;
     if (file) preview.src = URL.createObjectURL(file);
@@ -25,27 +41,46 @@ avatarInput.onchange = () => {
 form.onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('save');
+    const originalText = btn.innerText;
     btn.innerText = "SAVING...";
+    btn.disabled = true;
     
-    const { data: { user } } = await supabase.auth.getUser();
-    let url = preview.src;
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        let finalImageUrl = preview.src;
 
-    if(avatarInput.files[0]) {
-        const file = avatarInput.files[0];
-        const path = `avatars/${user.id}_${Date.now()}`;
-        await supabase.storage.from('blog-images').upload(path, file);
-        url = supabase.storage.from('blog-images').getPublicUrl(path).data.publicUrl;
+        // Agar user ne nayi image select ki hai toh upload karein
+        if(avatarInput.files[0]) {
+            const file = avatarInput.files[0];
+            const path = `avatars/${user.id}_${Date.now()}`;
+            const { error: uploadError } = await supabase.storage.from('blog-images').upload(path, file);
+            
+            if (uploadError) throw uploadError;
+            
+            finalImageUrl = supabase.storage.from('blog-images').getPublicUrl(path).data.publicUrl;
+        }
+
+        // Upsert: Agar hai toh update, warna insert
+        const { error: upsertError } = await supabase.from('profiles').upsert({
+            id: user.id,
+            full_name: document.getElementById('full_name').value,
+            username: document.getElementById('username').value,
+            bio: document.getElementById('bio').value,
+            avatar_url: finalImageUrl,
+            updated_at: new Date()
+        });
+
+        if (upsertError) throw upsertError;
+
+        alert("Profile Updated Successfully!");
+        location.reload(); // Refresh to update navbar and icons
+
+    } catch (err) {
+        alert("Error: " + err.message);
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
-
-    await supabase.from('profiles').upsert({
-        id: user.id,
-        full_name: document.getElementById('full_name').value,
-        username: document.getElementById('username').value,
-        bio: document.getElementById('bio').value,
-        avatar_url: url
-    });
-
-    alert("Profile Updated!");
-    btn.innerText = "UPDATE PROFILE";
 };
+
 load();

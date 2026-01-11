@@ -1,78 +1,108 @@
 import { supabase } from './config.js';
 
 const form = document.getElementById('auth-form');
-const toggleBtn = document.getElementById('toggle-btn');
-const signupFields = document.getElementById('signup-fields');
 const pfpInput = document.getElementById('pfp-input');
 const pfpPreview = document.getElementById('pfp-preview');
+const toggleBtn = document.getElementById('toggle-btn');
+const submitBtn = document.getElementById('submit-btn');
 
-let isLogin = false; // Default signup par rakha hai
+// Aik pakka variable state track karne ke liye
+let isLoginMode = true; 
 
+// Toggle Function
 toggleBtn.onclick = () => {
-    isLogin = !isLogin;
-    signupFields.classList.toggle('hidden', isLogin);
-    document.getElementById('title').innerText = isLogin ? "Welcome Back" : "Create Account";
-    document.getElementById('toggle-text').innerText = isLogin ? "Don't have an account?" : "Already have an account?";
-    toggleBtn.innerText = isLogin ? "Signup" : "Login";
+    isLoginMode = !isLoginMode; // Mode badlein
+    
+    // UI Updates
+    document.getElementById('signup-fields').classList.toggle('hidden', isLoginMode);
+    document.getElementById('title').innerText = isLoginMode ? "Welcome Back" : "Create Account";
+    submitBtn.innerText = isLoginMode ? "SIGN IN →" : "CREATE ACCOUNT →";
+    document.getElementById('toggle-text').innerText = isLoginMode ? "Don't have an account?" : "Already have an account?";
+    toggleBtn.innerText = isLoginMode ? "Signup" : "Login";
 };
 
-pfpInput.onchange = () => {
-    const [file] = pfpInput.files;
-    if (file) pfpPreview.src = URL.createObjectURL(file);
-};
+// Image Preview
+if(pfpInput) {
+    pfpInput.onchange = () => {
+        const [file] = pfpInput.files;
+        if (file) pfpPreview.src = URL.createObjectURL(file);
+    };
+}
 
 form.onsubmit = async (e) => {
     e.preventDefault();
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    const btn = document.getElementById('submit-btn');
-    btn.innerText = "PROCESSING...";
+
+    submitBtn.innerText = "PROCESSING...";
+    submitBtn.disabled = true;
 
     try {
-        if (isLogin) {
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) throw error;
-            window.location.href = 'index.html';
-        } else {
-            // 1. Signup User
-            const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
-            if (authError) throw authError;
+        if (isLoginMode) {
+            // --- LOGIN LOGIC ---
+            const { data, error } = await supabase.auth.signInWithPassword({ 
+                email: email, 
+                password: password 
+            });
 
-            const user = authData.user;
-            let avatarUrl = "";
-
-            // 2. Upload Avatar
-            const file = pfpInput.files[0];
-            if (file) {
-                const path = `avatars/${user.id}`;
-                await supabase.storage.from('blog-images').upload(path, file);
-                avatarUrl = supabase.storage.from('blog-images').getPublicUrl(path).data.publicUrl;
+            if (error) {
+                // Agar email confirm nahi kiya toh Supabase login nahi karne deta
+                if (error.message.includes("Email not confirmed")) {
+                    throw new Error("Please check your email and confirm your account first!");
+                }
+                throw error;
             }
 
-            // 3. Create Profile Record
-            const { error: profileError } = await supabase.from('profiles').insert([{
-                id: user.id,
-                full_name: document.getElementById('full-name').value,
-                username: document.getElementById('username').value,
-                avatar_url: avatarUrl
-            }]);
-
-            if (profileError) throw profileError;
-            alert("Account & Profile Created! Please verify email if required.");
+            console.log("Login Success");
             window.location.href = 'index.html';
+
+        } else {
+            // --- SIGNUP LOGIC ---
+            const fullName = document.getElementById('full-name').value;
+            const username = document.getElementById('username').value;
+            const file = pfpInput.files[0];
+
+            if (!file) throw new Error("Please upload a profile picture first.");
+
+            // 1. Create Auth Account
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: { data: { full_name: fullName } }
+            });
+
+            if (authError) throw authError;
+            const user = authData.user;
+
+            if (user) {
+                // 2. Upload Avatar
+                const fileName = `avatars/${user.id}_${Date.now()}`;
+                const { error: uploadError } = await supabase.storage
+                    .from('blog-images')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(fileName);
+                const avatarUrl = urlData.publicUrl;
+
+                // 3. Create Profile Entry
+                const { error: profileError } = await supabase.from('profiles').insert([{
+                    id: user.id,
+                    full_name: fullName,
+                    username: username,
+                    avatar_url: avatarUrl
+                }]);
+
+                if (profileError) throw profileError;
+
+                alert("Signup successful! Please check your email for confirmation link before logging in.");
+                window.location.reload(); // Refresh to go back to Login mode
+            }
         }
     } catch (err) {
         alert(err.message);
-        btn.innerText = "CONTINUE →";
+        submitBtn.innerText = isLoginMode ? "SIGN IN →" : "CREATE ACCOUNT →";
+        submitBtn.disabled = false;
     }
 };
-
-const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        full_name: document.getElementById('full-name').value // Ye naam trigger uthaye ga
-      }
-    }
-  });
